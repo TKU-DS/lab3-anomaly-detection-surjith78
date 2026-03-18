@@ -53,25 +53,29 @@ def process_with_mad_filter():
                 continue
                 
             # TODO 1: Calculate the 'current_median' of the values in the 'window'
-            
+            current_median = statistics.median(window)
             
             # TODO 2: Calculate the Absolute Deviations for each item in the window
-            
+            absolute_deviations = [abs(x - current_median) for x in window]
             
             # TODO 3: Calculate the Median Absolute Deviation (MAD)
             # Hint: Add 0.0001 to avoid ZeroDivisionError.
-            
+            mad = statistics.median(absolute_deviations) + 0.0001
             
             # TODO 4: Calculate the Modified Z-Score (M)
             # Formula: M = 0.6745 * (value - current_median) / mad
-            
+            M = 0.6745 * (value - current_median) / mad
 
             
             # TODO 5: Reject or Accept the value based on MODIFIED_Z_THRESHOLD
             # If accepted, remember to append it to the window and write to the CSV.
             # If rejected, increment anomalies_rejected.
-            
-            pass # Remove this pass when you implement the logic
+            if abs(M) <= MODIFIED_Z_THRESHOLD:
+                window.append(value)
+                writer.writerow([value])
+            else:
+                anomalies_rejected += 1
+            #pass  Remove this pass when you implement the logic
             
     print(f"    -> Success: {anomalies_rejected} anomalies successfully blocked!")
 
